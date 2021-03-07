@@ -33,3 +33,12 @@ export async function updateRule(params: TableListParams) {
     },
   });
 }
+
+export async function uploadData(file: File) {
+  return request('/big-data/import', {
+    method: 'POST',
+    data: {
+      ...file,
+    },
+  });
+}

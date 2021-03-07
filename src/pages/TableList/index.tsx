@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'umi';
-import { Button, message, Drawer } from 'antd';
+import { Button, message, Drawer, Upload } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 
 import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
@@ -13,7 +14,7 @@ import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import CreateForm from './components/CreateForm';
 import type { TableListItem } from './data.d';
-import { queryRule, updateRule, addRule, removeRule } from './service';
+import { queryRule, updateRule, addRule, removeRule, uploadData } from './service';
 
 /**
  * Adicionar
@@ -105,6 +106,17 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   }
 };
 
+const handleUpload = async (file) => {
+  if (!file) return true;
+  try {
+    await uploadData(file);
+    message.success('Contatos carregados com sucesso');
+  } catch (error) {
+    message.error('A exclusão falhou, por favor tente novamente');
+    return false;
+  }
+};
+
 const TableList: React.FC = () => {
   /** Modal visivel*/
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -119,6 +131,21 @@ const TableList: React.FC = () => {
 
   /** Configuração internacional */
   const intl = useIntl();
+
+  const uploadProps = {
+    name: 'file',
+    onChange(info) {
+      if (info.file.status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully`);
+        handleUpload(info.file);
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+  };
 
   const checkCustom = (values) => {
     console.log('Checkou customizado');
@@ -238,6 +265,9 @@ const TableList: React.FC = () => {
           >
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="Novo" />
           </Button>,
+          <Upload {...uploadProps}>
+            <Button icon={<UploadOutlined />}>Click to Upload</Button>
+          </Upload>,
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
