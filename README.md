@@ -2,7 +2,7 @@
 
 A sexta feira foi inteira utilizada para fazer a autenticação, e sem sucesso. Além de tudo, eu acabei deixando o relógio contando enquanto eu dormia. 
 Como o resultado foi negativo, eu contei como se a sexta feira tivesse sido utilizada para aprender melhor a utilizar o Ant Design e quais erros esperar/evitar no sábado. 
-O período real utilizado até sábado foi: 
+O período real utilizado até sábado foi:  
   Quinta-feira: 
   - Noite: 19h as 00h (criando e entendendo o projeto) 
   Sexta-feira: 
