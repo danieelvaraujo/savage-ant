@@ -11,10 +11,11 @@ Sexta-feira:
   - Manhã: 8h as 10h
   - Tarde: 12h as 18h 
 
-E então continuei no sábado, onde consegui ter alguns resultados. No sábado, utilizei o Clockify assim que voltei ao desafio pela manhã, contando 30 minutos a mais que foi o tempo que passou antes de eu me lembrar de ligar o Clockify. 
-Durante os outros momentos do dia, as pausas foram de no máximo 5 minutos, não havendo necessidade de parar o relógio.
-Como não consegui compartilhar o horário do Clockify, segue o link da imagem:
-https://i.imgur.com/qTIDeVK.jpg
+E então continuei no sábado, onde consegui ter alguns resultados. 
+No sábado, utilizei o Clockify assim que voltei ao desafio pela manhã, contando 30 minutos a mais que foi o tempo que passou antes de eu me lembrar de ligar o Clockify.  
+Durante os outros momentos do dia, as pausas foram de no máximo 5 minutos, não havendo necessidade de parar o relógio.  
+Como não consegui compartilhar o horário do Clockify, segue o link da imagem: 
+https://i.imgur.com/qTIDeVK.jpg 
 
 # Ant Design Pro
 
