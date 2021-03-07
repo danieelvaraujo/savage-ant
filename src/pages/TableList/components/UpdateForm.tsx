@@ -1,13 +1,6 @@
 import React from 'react';
 import { Modal } from 'antd';
-import {
-  ProFormSelect,
-  ProFormText,
-  ProFormTextArea,
-  StepsForm,
-  ProFormRadio,
-  ProFormDateTimePicker,
-} from '@ant-design/pro-form';
+import { ProFormText, StepsForm } from '@ant-design/pro-form';
 import { useIntl, FormattedMessage } from 'umi';
 
 import type { TableListItem } from '../data.d';
@@ -42,7 +35,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             destroyOnClose
             title={intl.formatMessage({
               id: 'pages.searchTable.updateForm.ruleConfig',
-              defaultMessage: '规则配置',
+              defaultMessage: 'Editar contato',
             })}
             visible={props.updateModalVisible}
             footer={submitter}
@@ -58,150 +51,493 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     >
       <StepsForm.StepForm
         initialValues={{
-          name: props.values.name,
-          desc: props.values.desc,
+          uuid: props.values.uuid,
+          first_name: props.values.first_name,
+          last_name: props.values.last_name,
+          emails: props.values.emails,
+          phones: props.values.phones,
+          gender: props.values.gender,
+          address: props.values.address,
+          city: props.values.city,
+          postal_code: props.values.postal_code,
+          country: props.values.country,
+          birthday: props.values.birthday,
         }}
         title={intl.formatMessage({
           id: 'pages.searchTable.updateForm.basicConfig',
-          defaultMessage: '基本信息',
+          defaultMessage: 'Informações básicas',
         })}
       >
         <ProFormText
-          name="name"
+          name="first_name"
           label={intl.formatMessage({
             id: 'pages.searchTable.updateForm.ruleName.nameLabel',
-            defaultMessage: '规则名称',
+            defaultMessage: 'Primeiro nome',
           })}
-          width="md"
+          width="lg"
           rules={[
             {
               required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
-                  defaultMessage="请输入规则名称！"
+                  defaultMessage="O campo não deve ficar vazio"
                 />
               ),
             },
           ]}
         />
-        <ProFormTextArea
-          name="desc"
-          width="md"
+        <ProFormText
+          name="last_name"
           label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleDesc.descLabel',
-            defaultMessage: '规则描述',
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Sobrenome',
           })}
-          placeholder={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleDesc.descPlaceholder',
-            defaultMessage: '请输入至少五个字符',
-          })}
+          width="lg"
           rules={[
             {
               required: true,
               message: (
                 <FormattedMessage
-                  id="pages.searchTable.updateForm.ruleDesc.descRules"
-                  defaultMessage="请输入至少五个字符的规则描述！"
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
                 />
               ),
-              min: 5,
+            },
+          ]}
+        />
+        <ProFormText
+          name="emails"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Email',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="gender"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Seu gênero',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="address"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Endereço',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="city"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Cidade',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="postal_code"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Primeiro nome',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="country"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'País',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="birthday"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Data de nascimento',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
             },
           ]}
         />
       </StepsForm.StepForm>
       <StepsForm.StepForm
         initialValues={{
-          target: '0',
-          template: '0',
+          job_function: props.values.job_function,
+          job_level: props.values.job_level,
+          job_title: props.values.job_title,
+          business_name: props.values.business_name,
+          business_categories: props.values.business_categories,
+          business_address: props.values.business_address,
+          business_city: props.values.business_city,
+          business_postal_code: props.values.business_postal_code,
+          business_country: props.values.business_country,
+          num_employees: props.values.num_employees,
+          revenue_currency: props.values.revenue_currency,
+          revenue_min: props.values.revenue_min,
+          revenue_max: props.values.revenue_max,
         }}
         title={intl.formatMessage({
           id: 'pages.searchTable.updateForm.ruleProps.title',
-          defaultMessage: '配置规则属性',
+          defaultMessage: 'Informações empresariais',
         })}
       >
-        <ProFormSelect
-          name="target"
-          width="md"
+        <ProFormText
+          name="business_name"
           label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.object',
-            defaultMessage: '监控对象',
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Nome da empresa',
           })}
-          valueEnum={{
-            0: '表一',
-            1: '表二',
-          }}
-        />
-        <ProFormSelect
-          name="template"
-          width="md"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleProps.templateLabel',
-            defaultMessage: '规则模板',
-          })}
-          valueEnum={{
-            0: '规则模板一',
-            1: '规则模板二',
-          }}
-        />
-        <ProFormRadio.Group
-          name="type"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleProps.typeLabel',
-            defaultMessage: '规则类型',
-          })}
-          options={[
+          width="lg"
+          rules={[
             {
-              value: '0',
-              label: '强',
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
             },
+          ]}
+        />
+        <ProFormText
+          name="business_categories"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Categoria da empresa',
+          })}
+          width="lg"
+          rules={[
             {
-              value: '1',
-              label: '弱',
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="business_address"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Endereço da empresa',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="business_city"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Cidade da empresa',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="business_postal_code"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'CEP da empresa',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="business_country"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'País da empresa',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="num_employees"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Número de empregados',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="revenue_currency"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Moeda principal da empresa',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="revenue_min"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Receita mínima da empresa',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="revenue_max"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Receita máxima da empresa',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
             },
           ]}
         />
       </StepsForm.StepForm>
       <StepsForm.StepForm
         initialValues={{
-          type: '1',
-          frequency: 'month',
+          linkedinURL: props.values.linkedinURL,
+          facebookURL: props.values.facebookURL,
+          websites: props.values.websites,
         }}
         title={intl.formatMessage({
           id: 'pages.searchTable.updateForm.schedulingPeriod.title',
-          defaultMessage: '设定调度周期',
+          defaultMessage: 'Páginas pessoais',
         })}
       >
-        <ProFormDateTimePicker
-          name="time"
-          width="md"
+        <ProFormText
+          name="linkedinURL"
           label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.schedulingPeriod.timeLabel',
-            defaultMessage: '开始时间',
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Linkedin',
           })}
+          width="lg"
           rules={[
             {
               required: true,
               message: (
                 <FormattedMessage
-                  id="pages.searchTable.updateForm.schedulingPeriod.timeRules"
-                  defaultMessage="请选择开始时间！"
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
                 />
               ),
             },
           ]}
         />
-        <ProFormSelect
-          name="frequency"
+        <ProFormText
+          name="facebookURL"
           label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.object',
-            defaultMessage: '监控对象',
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Facebook',
           })}
-          width="md"
-          valueEnum={{
-            month: '月',
-            week: '周',
-          }}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="websites"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Website',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
+        />
+        <ProFormText
+          name="custom"
+          label={intl.formatMessage({
+            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+            defaultMessage: 'Opção customizada',
+          })}
+          width="lg"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.updateForm.ruleName.nameRules"
+                  defaultMessage="O campo não deve ficar vazio"
+                />
+              ),
+            },
+          ]}
         />
       </StepsForm.StepForm>
     </StepsForm>

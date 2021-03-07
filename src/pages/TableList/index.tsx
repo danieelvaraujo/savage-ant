@@ -1,13 +1,15 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Input, Drawer } from 'antd';
 import React, { useState, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'umi';
+import { Button, message, Input, Drawer } from 'antd';
+
+import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
+
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import type { TableListItem } from './data.d';
@@ -66,7 +68,7 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   if (!selectedRows) return true;
   try {
     await removeRule({
-      key: selectedRows.map((row) => row.key),
+      uuid: selectedRows.map((row) => row.uuid),
     });
     hide();
     message.success('Excluído com sucesso, a lista será atualizada');
@@ -95,14 +97,10 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.updateForm.ruleName.nameLabel"
-          defaultMessage="Nome da regra"
-        />
-      ),
-      dataIndex: 'name',
-      tip: 'O nome da regra deve ser único',
+      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Sobrenome" />,
+      dataIndex: 'last_name',
+      valueType: 'textarea',
+      sorter: true,
       render: (dom, entity) => {
         return (
           <a
@@ -117,94 +115,41 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Descrição" />,
-      dataIndex: 'desc',
+      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Gênero" />,
+      dataIndex: 'gender',
       valueType: 'textarea',
+      sorter: true,
+    },
+    {
+      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Cidade" />,
+      dataIndex: 'city',
+      valueType: 'textarea',
+      sorter: true,
+    },
+    {
+      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="País" />,
+      dataIndex: 'country',
+      valueType: 'textarea',
+      sorter: true,
     },
     {
       title: (
-        <FormattedMessage
-          id="pages.searchTable.titleCallNo"
-          defaultMessage="Número de chamadas de serviço"
-        />
+        <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Função de trabalho" />
       ),
-      dataIndex: 'callNo',
+      dataIndex: 'job_function',
+      valueType: 'textarea',
       sorter: true,
-      hideInForm: true,
-      renderText: (val: string) =>
-        `${val}${intl.formatMessage({
-          id: 'pages.searchTable.tenThousand',
-          defaultMessage: ' 万 ',
-        })}`,
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="status" />,
-      dataIndex: 'status',
-      hideInForm: true,
-      valueEnum: {
-        0: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="desligar" />
-          ),
-          status: 'Default',
-        },
-        1: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.running"
-              defaultMessage="Processando"
-            />
-          ),
-          status: 'Processing',
-        },
-        2: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Conectado" />
-          ),
-          status: 'Success',
-        },
-        3: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.abnormal"
-              defaultMessage="Indisponível"
-            />
-          ),
-          status: 'Error',
-        },
-      },
     },
     {
       title: (
-        <FormattedMessage
-          id="pages.searchTable.titleUpdatedAt"
-          defaultMessage="Última hora agendada"
-        />
+        <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Nível de proficiência" />
       ),
+      dataIndex: 'job_level',
+      valueType: 'textarea',
       sorter: true,
-      dataIndex: 'updatedAt',
-      valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return (
-            <Input
-              {...rest}
-              placeholder={intl.formatMessage({
-                id: 'pages.searchTable.exception',
-                defaultMessage: 'Por favor, indique o motivo da exceção!',
-              })}
-            />
-          );
-        }
-        return defaultRender(item);
-      },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="operativo" />,
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Opções" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -215,13 +160,7 @@ const TableList: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-          <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuração" />
-        </a>,
-        <a key="subscribeAlert" href="https://procomponents.ant.design/">
-          <FormattedMessage
-            id="pages.searchTable.subscribeAlert"
-            defaultMessage="Inscreva-se para receber alertas"
-          />
+          <FormattedMessage id="pages.searchTable.config" defaultMessage="Editar" />
         </a>,
       ],
     },
@@ -235,7 +174,7 @@ const TableList: React.FC = () => {
           defaultMessage: 'Formulário de inquérito',
         })}
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="uuid"
         search={{
           labelWidth: 120,
         }}
@@ -262,18 +201,10 @@ const TableList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="escolhido" />{' '}
+              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="Escolhido" />{' '}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
               <FormattedMessage id="pages.searchTable.item" defaultMessage="item" />
               &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id="pages.searchTable.totalServiceCalls"
-                  defaultMessage="Número total de chamadas de serviço"
-                />{' '}
-                {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)}{' '}
-                <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="0000" />
-              </span>
             </div>
           }
         >
@@ -284,25 +215,20 @@ const TableList: React.FC = () => {
               actionRef.current?.reloadAndRest?.();
             }}
           >
-            <FormattedMessage
-              id="pages.searchTable.batchDeletion"
-              defaultMessage="Deleção de lote"
-            />
+            <FormattedMessage id="pages.searchTable.batchDeletion" defaultMessage="Deletar lote" />
           </Button>
           <Button type="primary">
-            <FormattedMessage
-              id="pages.searchTable.batchApproval"
-              defaultMessage="Aprovação de lote"
-            />
+            <FormattedMessage id="pages.searchTable.batchApproval" defaultMessage="Aprovar lote" />
           </Button>
         </FooterToolbar>
       )}
+
       <ModalForm
         title={intl.formatMessage({
           id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: 'Nova regra',
+          defaultMessage: 'Criar novo contato',
         })}
-        width="400px"
+        width="800px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
@@ -319,19 +245,274 @@ const TableList: React.FC = () => {
           rules={[
             {
               required: true,
+              message: <FormattedMessage id="primeiro_nome" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="first_name"
+          placeholder="Primeiro nome"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="last_name" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="last_name"
+          placeholder="Sobrenome"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="emails" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="emails"
+          placeholder="Email"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="phones" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="phones"
+          placeholder="Telefone"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="gender" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="gender"
+          placeholder="Gênero"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="address" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="address"
+          placeholder="Endereço"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="city" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="city"
+          placeholder="Cidade"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="postal_code" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="postal_code"
+          placeholder="CEP"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="country" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="country"
+          placeholder="País"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="linkedinURL" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="linkedinURL"
+          placeholder="Seu Linkedin"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="facebookURL" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="facebookURL"
+          placeholder="Seu facebook"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="bitrhday" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="bitrhday"
+          placeholder="Data de aniversário"
+        />{' '}
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="job_function" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="job_function"
+          placeholder="Função de trabalho"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="job_level" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="job_level"
+          placeholder="Nível de proficiência"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="job_title" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="job_title"
+          placeholder="Título do trabalho"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="business_name" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="business_name"
+          placeholder="Nome fantasia"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
               message: (
-                <FormattedMessage
-                  id="pages.searchTable.ruleName"
-                  defaultMessage="O nome da regra é obrigatório"
-                />
+                <FormattedMessage id="business_categories" defaultMessage="Campo obrigatório" />
               ),
             },
           ]}
-          width="md"
-          name="name"
+          name="business_categories"
+          placeholder="Tipo de empresa"
         />
-        <ProFormTextArea width="md" name="desc" />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage id="business_address" defaultMessage="Campo obrigatório" />
+              ),
+            },
+          ]}
+          name="business_address"
+          placeholder="Endereço da empresa"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="business_city" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="business_city"
+          placeholder="Cidade da empresa"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage id="business_postal_code" defaultMessage="Campo obrigatório" />
+              ),
+            },
+          ]}
+          name="business_postal_code"
+          placeholder="CEP da empresa"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage id="business_country" defaultMessage="Campo obrigatório" />
+              ),
+            },
+          ]}
+          name="business_country"
+          placeholder="País da empresa"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="num_employees" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="num_employees"
+          placeholder="Número de funcionários"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage id="revenue_currency" defaultMessage="Campo obrigatório" />
+              ),
+            },
+          ]}
+          name="revenue_currency"
+          placeholder="Valor da moeda"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="revenue_min" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="revenue_min"
+          placeholder="Receita mínima"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="revenue_max" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="revenue_max"
+          placeholder="Receita máxima"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: <FormattedMessage id="websites" defaultMessage="Campo obrigatório" />,
+            },
+          ]}
+          name="websites"
+          placeholder="Website"
+        />
       </ModalForm>
+
       <UpdateForm
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
@@ -360,15 +541,15 @@ const TableList: React.FC = () => {
         }}
         closable={false}
       >
-        {currentRow?.name && (
+        {currentRow?.first_name && (
           <ProDescriptions<TableListItem>
             column={2}
-            title={currentRow?.name}
+            title={currentRow?.first_name}
             request={async () => ({
               data: currentRow || {},
             })}
             params={{
-              id: currentRow?.name,
+              id: currentRow?.first_name,
             }}
             columns={columns as ProDescriptionsItemProps<TableListItem>[]}
           />
