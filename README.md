@@ -1,3 +1,18 @@
+# Horários 
+
+Como a sexa feira foi quase inteira utilizada para fazer a autenticação, e sem sucesso, eu acabei deixando o relógio contando enquanto eu dormia. 
+O período real utilizado na sexta feira foi: 
+  - Manhã: 8h as 10h
+  - Tarde: 13h as 18h
+E então continuei no sábado, onde consegui ter os mínimos resultados esperados. No sábado, utilizei o Clockify desde o momento em que voltei ao desafio. 
+No sábado, os horários de pausa, em que eu parei o Clockify, foram: 
+  - Tarde: as 15h para o almoço
+  - Noite: as 19h para jantar
+Durante os outros momentos do dia, as pausas foram de no máximo 5 minutos, não havendo necessidade de parar o relógio.
+
+Como não consegui compartilhar o horário do Clockify, segue o link da imagem:
+https://i.imgur.com/qTIDeVK.jpg
+
 # Ant Design Pro
 
 This project is initialized with [Ant Design Pro](https://pro.ant.design). Follow is the quick guide for how to use.
