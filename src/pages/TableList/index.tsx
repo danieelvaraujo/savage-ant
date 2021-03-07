@@ -1,17 +1,17 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'umi';
-import { Button, message, Input, Drawer } from 'antd';
+import { Button, message, Drawer } from 'antd';
 
 import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
+import CreateForm from './components/CreateForm';
 import type { TableListItem } from './data.d';
 import { queryRule, updateRule, addRule, removeRule } from './service';
 
@@ -43,9 +43,33 @@ const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading('Configurando');
   try {
     await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
+      uuid: fields.uuid,
+      first_name: fields.first_name,
+      last_name: fields.last_name,
+      emails: fields.emails,
+      phones: fields.phones,
+      gender: fields.gender,
+      address: fields.address,
+      city: fields.city,
+      postal_code: fields.postal_code,
+      country: fields.country,
+      linkedinURL: fields.linkedinURL,
+      facebookURL: fields.facebookURL,
+      birthday: fields.birthday,
+      job_function: fields.job_function,
+      job_level: fields.job_level,
+      job_title: fields.job_title,
+      business_name: fields.business_name,
+      business_categories: fields.business_categories,
+      business_address: fields.business_address,
+      business_city: fields.business_city,
+      business_postal_code: fields.business_postal_code,
+      business_country: fields.business_country,
+      num_employees: fields.num_employees,
+      revenue_currency: fields.revenue_currency,
+      revenue_min: fields.revenue_min,
+      revenue_max: fields.revenue_max,
+      websites: fields.websites,
     });
     hide();
 
@@ -53,6 +77,7 @@ const handleUpdate = async (fields: FormValueType) => {
     return true;
   } catch (error) {
     hide();
+    console.log(error);
     message.error('A configuração falhou, tente novamente!');
     return false;
   }
@@ -85,22 +110,57 @@ const TableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** Modal de atualização */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-
   const [showDetail, setShowDetail] = useState<boolean>(false);
-
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [createValues, setCreateValues] = useState<TableListItem>();
+  const [ready, setReady] = useState(false);
 
   /** Configuração internacional */
   const intl = useIntl();
+
+  const checkCustom = (values) => {
+    console.log('Checkou customizado');
+    if (values.key) {
+      setCreateValues({
+        ...values,
+        custom_fields: {
+          json: values.json,
+          key: values.key,
+        },
+      });
+      setReady(true);
+    } else {
+      setCreateValues({ ...values });
+      setReady(true);
+    }
+  };
+
+  const enviarForm = async () => {
+    console.log('Enviou o form');
+    const success = await handleAdd(createValues as TableListItem);
+    if (success && ready) {
+      handleModalVisible(false);
+      if (actionRef.current) {
+        actionRef.current.reload();
+      }
+    } else {
+      return;
+    }
+  };
+
+  useEffect(() => {
+    if (ready) {
+      enviarForm();
+    }
+  }, [ready]);
 
   const columns: ProColumns<TableListItem>[] = [
     {
       title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Sobrenome" />,
       dataIndex: 'last_name',
       valueType: 'textarea',
-      sorter: true,
       render: (dom, entity) => {
         return (
           <a
@@ -115,22 +175,14 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Gênero" />,
-      dataIndex: 'gender',
-      valueType: 'textarea',
-      sorter: true,
-    },
-    {
       title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Cidade" />,
       dataIndex: 'city',
       valueType: 'textarea',
-      sorter: true,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="País" />,
       dataIndex: 'country',
       valueType: 'textarea',
-      sorter: true,
     },
     {
       title: (
@@ -138,7 +190,6 @@ const TableList: React.FC = () => {
       ),
       dataIndex: 'job_function',
       valueType: 'textarea',
-      sorter: true,
     },
     {
       title: (
@@ -146,7 +197,6 @@ const TableList: React.FC = () => {
       ),
       dataIndex: 'job_level',
       valueType: 'textarea',
-      sorter: true,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Opções" />,
@@ -223,299 +273,9 @@ const TableList: React.FC = () => {
         </FooterToolbar>
       )}
 
-      <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: 'Criar novo contato',
-        })}
-        width="800px"
-        visible={createModalVisible}
-        onVisibleChange={handleModalVisible}
-        onFinish={async (value) => {
-          const success = await handleAdd(value as TableListItem);
-          if (success) {
-            handleModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-      >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="primeiro_nome" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="first_name"
-          placeholder="Primeiro nome"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="last_name" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="last_name"
-          placeholder="Sobrenome"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="emails" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="emails"
-          placeholder="Email"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="phones" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="phones"
-          placeholder="Telefone"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="gender" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="gender"
-          placeholder="Gênero"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="address" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="address"
-          placeholder="Endereço"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="city" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="city"
-          placeholder="Cidade"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="postal_code" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="postal_code"
-          placeholder="CEP"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="country" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="country"
-          placeholder="País"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="linkedinURL" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="linkedinURL"
-          placeholder="Seu Linkedin"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="facebookURL" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="facebookURL"
-          placeholder="Seu facebook"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="bitrhday" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="bitrhday"
-          placeholder="Data de aniversário"
-        />{' '}
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="job_function" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="job_function"
-          placeholder="Função de trabalho"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="job_level" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="job_level"
-          placeholder="Nível de proficiência"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="job_title" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="job_title"
-          placeholder="Título do trabalho"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="business_name" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="business_name"
-          placeholder="Nome fantasia"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage id="business_categories" defaultMessage="Campo obrigatório" />
-              ),
-            },
-          ]}
-          name="business_categories"
-          placeholder="Tipo de empresa"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage id="business_address" defaultMessage="Campo obrigatório" />
-              ),
-            },
-          ]}
-          name="business_address"
-          placeholder="Endereço da empresa"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="business_city" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="business_city"
-          placeholder="Cidade da empresa"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage id="business_postal_code" defaultMessage="Campo obrigatório" />
-              ),
-            },
-          ]}
-          name="business_postal_code"
-          placeholder="CEP da empresa"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage id="business_country" defaultMessage="Campo obrigatório" />
-              ),
-            },
-          ]}
-          name="business_country"
-          placeholder="País da empresa"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="num_employees" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="num_employees"
-          placeholder="Número de funcionários"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage id="revenue_currency" defaultMessage="Campo obrigatório" />
-              ),
-            },
-          ]}
-          name="revenue_currency"
-          placeholder="Valor da moeda"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="revenue_min" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="revenue_min"
-          placeholder="Receita mínima"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="revenue_max" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="revenue_max"
-          placeholder="Receita máxima"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="websites" defaultMessage="Campo obrigatório" />,
-            },
-          ]}
-          name="websites"
-          placeholder="Website"
-        />
-      </ModalForm>
-
       <UpdateForm
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value);
+        onSubmit={async (values) => {
+          const success = await handleUpdate(values);
           if (success) {
             handleUpdateModalVisible(false);
             setCurrentRow(undefined);
@@ -530,6 +290,15 @@ const TableList: React.FC = () => {
         }}
         updateModalVisible={updateModalVisible}
         values={currentRow || {}}
+      />
+
+      <CreateForm
+        onSubmit={async (values) => {
+          console.log('Submeteu');
+          checkCustom(values);
+        }}
+        onCancel={() => handleModalVisible(false)}
+        createModalVisible={createModalVisible}
       />
 
       <Drawer

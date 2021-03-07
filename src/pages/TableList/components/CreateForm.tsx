@@ -1,5 +1,5 @@
-import React from 'react';
-import { Modal } from 'antd';
+import React, { useState } from 'react';
+import { Modal, Typography, Row, Button } from 'antd';
 import { ProFormText, StepsForm } from '@ant-design/pro-form';
 import { useIntl, FormattedMessage } from 'umi';
 
@@ -13,15 +13,17 @@ export type FormValueType = {
   frequency?: string;
 } & Partial<TableListItem>;
 
-export type UpdateFormProps = {
+export type CreateFormProps = {
   onCancel: (flag?: boolean, formVals?: FormValueType) => void;
   onSubmit: (values: FormValueType) => Promise<void>;
-  updateModalVisible: boolean;
-  values: Partial<TableListItem>;
+  createModalVisible: boolean;
 };
 
-const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+const CreateForm: React.FC<CreateFormProps> = (props) => {
   const intl = useIntl();
+
+  const [custom, setCustom] = useState(false);
+
   return (
     <StepsForm
       stepsProps={{
@@ -30,14 +32,14 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       stepsFormRender={(dom, submitter) => {
         return (
           <Modal
-            width={640}
+            width={800}
             bodyStyle={{ padding: '32px 40px 48px' }}
             destroyOnClose
             title={intl.formatMessage({
               id: 'pages.searchTable.updateForm.ruleConfig',
-              defaultMessage: 'Editar contato',
+              defaultMessage: 'Criar contato',
             })}
-            visible={props.updateModalVisible}
+            visible={props.createModalVisible}
             footer={submitter}
             onCancel={() => {
               props.onCancel();
@@ -50,47 +52,11 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       onFinish={props.onSubmit}
     >
       <StepsForm.StepForm
-        initialValues={{
-          uuid: props.values.uuid,
-          first_name: props.values.first_name,
-          last_name: props.values.last_name,
-          emails: props.values.emails,
-          phones: props.values.phones,
-          gender: props.values.gender,
-          address: props.values.address,
-          city: props.values.city,
-          postal_code: props.values.postal_code,
-          country: props.values.country,
-          birthday: props.values.birthday,
-          job_function: props.values.job_function,
-          job_level: props.values.job_level,
-          job_title: props.values.job_title,
-        }}
         title={intl.formatMessage({
           id: 'pages.searchTable.updateForm.basicConfig',
           defaultMessage: 'Informações pessoais',
         })}
       >
-        <ProFormText
-          disabled={true}
-          name="uuid"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
-            defaultMessage: 'Usuário',
-          })}
-          width="lg"
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.updateForm.ruleName.nameRules"
-                  defaultMessage="O campo não deve ficar vazio"
-                />
-              ),
-            },
-          ]}
-        />
         <ProFormText
           name="first_name"
           label={intl.formatMessage({
@@ -321,21 +287,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         />
       </StepsForm.StepForm>
       <StepsForm.StepForm
-        initialValues={{
-          job_function: props.values.job_function,
-          job_level: props.values.job_level,
-          job_title: props.values.job_title,
-          business_name: props.values.business_name,
-          business_categories: props.values.business_categories,
-          business_address: props.values.business_address,
-          business_city: props.values.business_city,
-          business_postal_code: props.values.business_postal_code,
-          business_country: props.values.business_country,
-          num_employees: props.values.num_employees,
-          revenue_currency: props.values.revenue_currency,
-          revenue_min: props.values.revenue_min,
-          revenue_max: props.values.revenue_max,
-        }}
         title={intl.formatMessage({
           id: 'pages.searchTable.updateForm.ruleProps.title',
           defaultMessage: 'Informações empresariais',
@@ -533,11 +484,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         />
       </StepsForm.StepForm>
       <StepsForm.StepForm
-        initialValues={{
-          linkedinURL: props.values.linkedinURL,
-          facebookURL: props.values.facebookURL,
-          websites: props.values.websites,
-        }}
         title={intl.formatMessage({
           id: 'pages.searchTable.updateForm.schedulingPeriod.title',
           defaultMessage: 'Páginas pessoais',
@@ -600,28 +546,57 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             },
           ]}
         />
-        {/* <ProFormText
-          name="custom"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
-            defaultMessage: 'Opção customizada',
-          })}
-          width="lg"
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.updateForm.ruleName.nameRules"
-                  defaultMessage="O campo não deve ficar vazio"
-                />
-              ),
-            },
-          ]}
-        /> */}
+        <Row>
+          <Typography.Text>Você deseja inserir um campo customizado?</Typography.Text>
+        </Row>
+        <Row>
+          <Button onClick={() => setCustom(true)}>Inserir</Button>
+        </Row>
+        {custom ? (
+          <Row>
+            <ProFormText
+              name="key"
+              label={intl.formatMessage({
+                id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+                defaultMessage: 'Nome do campo customizado',
+              })}
+              width="lg"
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id="pages.searchTable.updateForm.ruleName.nameRules"
+                      defaultMessage="O campo não deve ficar vazio"
+                    />
+                  ),
+                },
+              ]}
+            />
+            <ProFormText
+              name="json"
+              label={intl.formatMessage({
+                id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+                defaultMessage: 'Valor do campo customizado',
+              })}
+              width="lg"
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id="pages.searchTable.updateForm.ruleName.nameRules"
+                      defaultMessage="O campo não deve ficar vazio"
+                    />
+                  ),
+                },
+              ]}
+            />
+          </Row>
+        ) : null}
       </StepsForm.StepForm>
     </StepsForm>
   );
 };
 
-export default UpdateForm;
+export default CreateForm;

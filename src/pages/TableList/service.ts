@@ -15,21 +15,21 @@ export async function removeRule(params: { uuid: string[] }) {
 }
 
 export async function addRule(params: TableListItem) {
+  console.log(params);
   return request('/big-data', {
     method: 'POST',
     data: {
       ...params,
-      method: 'post',
     },
   });
 }
 
 export async function updateRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
+  let idUpdate = params.uuid;
+  return request(`/big-data/${idUpdate}`, {
+    method: 'PUT',
     data: {
       ...params,
-      method: 'update',
     },
   });
 }
