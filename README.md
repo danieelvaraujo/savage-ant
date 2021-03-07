@@ -1,13 +1,16 @@
 # Horários 
 
 A sexta feira foi inteira utilizada para fazer a autenticação, e sem sucesso. Além de tudo, eu acabei deixando o relógio contando enquanto eu dormia. 
-Como o resultado foi negativo, eu contei como se a sexta feira tivesse sido utilizada para aprender melhor a utilizar o Ant Design e quais erros esperar/evitar no sábado. 
-O período real utilizado até sábado foi:  
+Como o resultado foi negativo, eu contei como se a sexta feira tivesse sido utilizada para aprender melhor a utilizar o Ant Design e quais erros esperar/evitar no sábado.  
+O período real utilizado até sábado foi:
+
 Quinta-feira: 
   - Noite: 19h as 00h (criando e entendendo o projeto)  
+
 Sexta-feira:  
   - Manhã: 8h as 10h
   - Tarde: 12h as 18h 
+
 E então continuei no sábado, onde consegui ter alguns resultados. No sábado, utilizei o Clockify assim que voltei ao desafio pela manhã, contando 30 minutos a mais que foi o tempo que passou antes de eu me lembrar de ligar o Clockify. 
 Durante os outros momentos do dia, as pausas foram de no máximo 5 minutos, não havendo necessidade de parar o relógio.
 Como não consegui compartilhar o horário do Clockify, segue o link da imagem:
