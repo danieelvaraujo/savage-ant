@@ -5,7 +5,7 @@ Como o resultado foi negativo, eu contei como se a sexta feira tivesse sido util
 O período real utilizado até sábado foi:  
   Quinta-feira: 
   - Noite: 19h as 00h (criando e entendendo o projeto) 
-  Sexta-feira: 
+  Sexta-feira:  
   - Manhã: 8h as 10h
   - Tarde: 12h as 18h 
 E então continuei no sábado, onde consegui ter alguns resultados. No sábado, utilizei o Clockify assim que voltei ao desafio pela manhã, contando 30 minutos a mais que foi o tempo que passou antes de eu me lembrar de ligar o Clockify. 
