@@ -2,7 +2,7 @@
 
 Nesta segunda etapa foi necessário organizar e limpar o programa, assim como criar as funções que faltavam para deixar a tabela funcional. 
 As implementações foram: remover o conteúdo desnecessário da tela, ativar a segurança por login, criar os campos "custom_fields" no form, ativar a opção de buscar por parâmetro, re-organizar o modal para fazer a edição e adição juntos, mensagem de confirmação antes do delete e tratar os erros utilizando as resposta da API.  
-Não foi possível realizar os pontos de tratar os erros, e os "custom_fields" não funcionam como deveriam, uma vez que é criado o campo com seu pai "key: value" de maneira incoerente com o esperado. 
+Não foi possível realizar os pontos de tratar os erros, e os "custom_fields" não funcionam como deveriam, uma vez que é criado o campo com seu par "key: value" de maneira incoerente com o esperado. 
 Os horários estão marcados no link abaixo. Na terça feira (09/03) faz se necessário contar 1h a mais no total do Clockify, referente ao tempo que passei antes de ativar.
 https://ibb.co/2Zpw9wY
 
