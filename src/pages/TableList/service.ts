@@ -1,10 +1,13 @@
 import request from '@/utils/request';
 import type { TableListParams, TableListItem } from './data.d';
 
-export async function queryContato(params?: TableListParams) {
-  return request('/big-data', {
-    params,
-  });
+export async function queryContato(params: TableListParams) {
+  if (params.pesquisar) {
+    const searchParam = params.pesquisar;
+    return request(`/big-data?search_term=${searchParam}`);
+  } else {
+    return request(`/big-data`);
+  }
 }
 
 export async function queryContatoParam(params: string) {

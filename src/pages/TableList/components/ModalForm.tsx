@@ -1,5 +1,6 @@
-import React from 'react';
-import { Modal } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Modal, Button, Input, Form, Space } from 'antd';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { ProFormText, StepsForm } from '@ant-design/pro-form';
 import { useIntl, FormattedMessage } from 'umi';
 
@@ -11,12 +12,13 @@ export type FormValueType = {
   type?: string;
   time?: string;
   frequency?: string;
+  camposCustom?: object;
 } & Partial<TableListItem>;
 
-export type UpdateFormProps = {
+export type FormProps = {
   onCancel: (flag?: boolean, formVals?: FormValueType) => void;
-  onSubmitUpdate?: (values: FormValueType) => Promise<void>;
-  onSubmitCreate?: (values: FormValueType) => Promise<void>;
+  onSubmitUpdate: (values: FormValueType) => Promise<void>;
+  onSubmitCreate: (values: FormValueType) => Promise<void>;
   updateModalVisible?: boolean;
   createModalVisible?: boolean;
   valuesUpdate: Partial<TableListItem>;
@@ -57,8 +59,15 @@ const ListaSocial: Partial<TableListItem> = {
   websites: 'websites',
 };
 
-const ModalForm: React.FC<UpdateFormProps> = (props) => {
+const ModalForm: React.FC<FormProps> = (props) => {
   const intl = useIntl();
+
+  const [camposCustom, setCamposCustom] = useState({});
+
+  useEffect(() => {
+    console.log(camposCustom);
+  }, [camposCustom]);
+
   return (
     <StepsForm
       stepsProps={{
@@ -84,7 +93,14 @@ const ModalForm: React.FC<UpdateFormProps> = (props) => {
           </Modal>
         );
       }}
-      onFinish={props.updateModalVisible ? props.onSubmitUpdate : props.onSubmitCreate}
+      // @TODO
+      onFinish={
+        props.updateModalVisible
+          ? props.onSubmitUpdate
+          : camposCustom
+          ? (values) => props.onSubmitCreate({ ...values, camposCustom })
+          : (values) => props.onSubmitCreate(values)
+      }
     >
       <StepsForm.StepForm
         initialValues={
@@ -199,51 +215,90 @@ const ModalForm: React.FC<UpdateFormProps> = (props) => {
           linkedinURL: props.valuesUpdate.linkedinURL,
           facebookURL: props.valuesUpdate.facebookURL,
           websites: props.valuesUpdate.websites,
+          custom_fields: props.valuesUpdate.custom_fields,
         }}
         title={intl.formatMessage({
           id: 'pages.searchTable.updateForm.schedulingPeriod.title',
           defaultMessage: 'Páginas pessoais',
         })}
       >
-        {Object.keys(ListaSocial).map((campo) => {
-          return (
-            <ProFormText
-              name={campo}
-              label={campo.replace(/(_)/g, ' ').toUpperCase()}
-              width="lg"
-              rules={[
-                {
-                  message: (
-                    <FormattedMessage
-                      id="pages.searchTable.updateForm.ruleName.nameRules"
-                      defaultMessage="O campo não deve ficar vazio"
-                    />
-                  ),
-                },
-              ]}
-            />
-          );
-        })}
-
-        {/* <ProFormText
-          name="custom"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
-            defaultMessage: 'Opção customizada',
+        <>
+          {Object.keys(ListaSocial).map((campo) => {
+            return (
+              <ProFormText
+                name={campo}
+                label={campo}
+                width="lg"
+                rules={[
+                  {
+                    message: (
+                      <FormattedMessage
+                        id="pages.searchTable.updateForm.ruleName.nameRules"
+                        defaultMessage="O campo não deve ficar vazio"
+                      />
+                    ),
+                  },
+                ]}
+              />
+            );
           })}
-          width="lg"
-          rules={[
-            {
-               
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.updateForm.ruleName.nameRules"
-                  defaultMessage="O campo não deve ficar vazio"
-                />
-              ),
-            },
-          ]}
-        /> */}
+
+          <Form name="dynamic_form_nest_item" autoComplete="off">
+            <Form.List name="custom_fields">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map((field) => (
+                    <Space
+                      key={field.key}
+                      style={{ display: 'flex', marginBottom: 8 }}
+                      align="baseline"
+                    >
+                      <Form.Item
+                        {...field}
+                        name={[field.name, 'nome_campo']}
+                        fieldKey={[field.fieldKey, 'nome_custom']}
+                        rules={[{ required: true, message: 'Missing first name' }]}
+                      >
+                        <Input
+                          placeholder="Campo personalizado"
+                          onChange={(e) =>
+                            setCamposCustom({ ...camposCustom, nome_campo: e.target.value })
+                          }
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, 'valor_campo']}
+                        fieldKey={[field.fieldKey, 'valor_custom']}
+                        rules={[{ required: true, message: 'Missing last name' }]}
+                      >
+                        <Input
+                          placeholder="Valor do campo"
+                          onChange={(e) =>
+                            setCamposCustom({ ...camposCustom, valor_campo: e.target.value })
+                          }
+                        />
+                      </Form.Item>
+                      <MinusCircleOutlined onClick={() => remove(field.name)} />
+                    </Space>
+                  ))}
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      onClick={() => {
+                        add();
+                      }}
+                      block
+                      icon={<PlusOutlined />}
+                    >
+                      Add field
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
+          </Form>
+        </>
       </StepsForm.StepForm>
     </StepsForm>
   );

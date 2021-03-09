@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'umi';
-import { Button, message, Drawer, Upload, Input, Col, Typography } from 'antd';
+import { Button, message, Drawer, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
 import { PlusOutlined } from '@ant-design/icons';
@@ -13,14 +13,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type { FormValueType } from './components/ModalForm';
 import ModalForm from './components/ModalForm';
 import type { TableListItem } from './data.d';
-import {
-  queryContato,
-  queryContatoParam,
-  updateContato,
-  addContato,
-  removeContato,
-  uploadData,
-} from './service';
+import { queryContato, updateContato, addContato, removeContato, uploadData } from './service';
 
 /**
  * Adicionar
@@ -96,21 +89,6 @@ const handleUpdate = async (fields: FormValueType) => {
  * @param selectedRows
  */
 
-const handleUpload = async (file: File) => {
-  if (!file) {
-    return false;
-  } else {
-    try {
-      await uploadData(file);
-      message.success('Contatos carregados com sucesso');
-      return true;
-    } catch (error) {
-      message.error('A exclusão falhou, por favor tente novamente');
-      return false;
-    }
-  }
-};
-
 const handleRemove = async (contato: TableListItem) => {
   const hide = message.loading('deletando');
   if (!contato.uuid) {
@@ -131,41 +109,37 @@ const handleRemove = async (contato: TableListItem) => {
   }
 };
 
-const handleSearch = async (param: string) => {
-  const hide = message.loading('procurando');
-  if (!param) {
+/**
+ * Upload
+ */
+
+const handleUpload = async (file: File) => {
+  if (!file) {
     return false;
   } else {
     try {
-      await queryContatoParam(param);
-      hide();
-      message.success('Busca finalizada');
+      await uploadData(file);
+      message.success('Contatos carregados com sucesso');
       return true;
     } catch (error) {
-      hide();
-      message.error('Este parâmetro não foi acessível');
+      message.error('A exclusão falhou, por favor tente novamente');
       return false;
     }
   }
 };
 
 const TableList: React.FC = () => {
-  /** Modal visivel*/
   const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
-  /** Modal de atualização */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
   const [createValues, setCreateValues] = useState<TableListItem>();
   const [ready, setReady] = useState(false);
-  const [searchParam, setSearchParam] = useState(false);
+  const actionRef = useRef<ActionType>();
 
   /** Configuração internacional */
   const intl = useIntl();
-  const { Search } = Input;
-  const { Text } = Typography;
 
   const uploadProps = {
     name: 'file',
@@ -183,7 +157,9 @@ const TableList: React.FC = () => {
   };
 
   const checkCustom = (values: any) => {
-    if (values.key) {
+    console.log(values);
+    return;
+    if (values.camposCustom) {
       setCreateValues({
         ...values,
         custom_fields: {
@@ -218,9 +194,16 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
+      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Pesquisar valor" />,
+      dataIndex: 'pesquisar',
+      valueType: 'textarea',
+      hideInTable: true,
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Sobrenome" />,
       dataIndex: 'last_name',
       valueType: 'textarea',
+      search: false,
       render: (dom, entity) => {
         return (
           <a
@@ -238,11 +221,13 @@ const TableList: React.FC = () => {
       title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Cidade" />,
       dataIndex: 'city',
       valueType: 'textarea',
+      search: false,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="País" />,
       dataIndex: 'country',
       valueType: 'textarea',
+      search: false,
     },
     {
       title: (
@@ -250,6 +235,7 @@ const TableList: React.FC = () => {
       ),
       dataIndex: 'job_function',
       valueType: 'textarea',
+      search: false,
     },
     {
       title: (
@@ -257,11 +243,13 @@ const TableList: React.FC = () => {
       ),
       dataIndex: 'job_level',
       valueType: 'textarea',
+      search: false,
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Opções" />,
       dataIndex: 'option',
       valueType: 'option',
+      search: false,
       render: (_, record) => [
         <a
           key="config"
@@ -287,19 +275,6 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <Col span={12} style={{ backgroundColor: 'white', padding: '10px' }}>
-        <Col span={18} style={{ marginLeft: '12px' }}>
-          <Text type="secondary">Pesquisar</Text>
-          <Search
-            placeholder="Coloque o valor que deseja encontrar"
-            onSearch={(value) => {
-              handleSearch(value);
-              setSearchParam(true);
-            }}
-            enterButton
-          />
-        </Col>
-      </Col>
       <ProTable<TableListItem>
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.title',
@@ -307,7 +282,10 @@ const TableList: React.FC = () => {
         })}
         actionRef={actionRef}
         rowKey="uuid"
-        search={false}
+        search={{
+          layout: 'vertical',
+          defaultCollapsed: false,
+        }}
         toolBarRender={() => [
           <Button
             type="primary"
@@ -322,11 +300,7 @@ const TableList: React.FC = () => {
             <Button icon={<UploadOutlined />}>Click to Upload</Button>
           </Upload>,
         ]}
-        request={
-          searchParam
-            ? (params, sorter, filter) => queryContatoParam(JSON.stringify(filter))
-            : (params, sorter, filter) => queryContato({ ...params, sorter, filter })
-        }
+        request={(params, sorter, filter) => queryContato({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -345,14 +319,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          <Button
-            onClick={async () => {
-              console.log('Por hora não faz nada');
-              // await handleRemove(selectedRowsState);
-              // setSelectedRows([]);
-              // actionRef.current?.reloadAndRest?.();
-            }}
-          >
+          <Button type="primary" danger>
             <FormattedMessage id="pages.searchTable.batchDeletion" defaultMessage="Deletar lote" />
           </Button>
           <Button type="primary">
@@ -361,19 +328,12 @@ const TableList: React.FC = () => {
         </FooterToolbar>
       )}
 
-      {/* CRIAR NOVO CONTATO */}
-      <ModalForm
-        onSubmitCreate={async (values) => {
-          checkCustom(values);
-        }}
-        onCancel={() => handleCreateModalVisible(false)}
-        createModalVisible={createModalVisible}
-        updateModalVisible={false}
-        valuesUpdate={{}}
-      />
-
       {/* ATUALIZAR CAMPOS */}
       <ModalForm
+        onSubmitCreate={async (values) => {
+          console.log(values);
+          // checkCustom(values);
+        }}
         onSubmitUpdate={async (values) => {
           const success = await handleUpdate(values);
           if (success) {
@@ -385,11 +345,12 @@ const TableList: React.FC = () => {
           }
         }}
         onCancel={() => {
+          handleCreateModalVisible(false);
           handleUpdateModalVisible(false);
           setCurrentRow(undefined);
         }}
         updateModalVisible={updateModalVisible}
-        createModalVisible={false}
+        createModalVisible={createModalVisible}
         valuesUpdate={currentRow || {}}
       />
 

@@ -70,11 +70,9 @@ export type TableListParams = {
   revenue_min?: string;
   revenue_max?: string;
   websites?: string;
-  custom_fields?: {
-    json: string;
-    key: string;
-    no_structure: string;
-  };
+  custom_fields?: object;
+  params?: string;
   filter?: Record<string, any[]>;
   sorter?: Record<string, any>;
+  pesquisar?: string;
 };
