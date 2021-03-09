@@ -15,9 +15,11 @@ export type FormValueType = {
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: FormValueType) => void;
-  onSubmit: (values: FormValueType) => Promise<void>;
-  updateModalVisible: boolean;
-  values: Partial<TableListItem>;
+  onSubmitUpdate?: (values: FormValueType) => Promise<void>;
+  onSubmitCreate?: (values: FormValueType) => Promise<void>;
+  updateModalVisible?: boolean;
+  createModalVisible?: boolean;
+  valuesUpdate: Partial<TableListItem>;
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
@@ -37,7 +39,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
               id: 'pages.searchTable.updateForm.ruleConfig',
               defaultMessage: 'Editar contato',
             })}
-            visible={props.updateModalVisible}
+            visible={props.updateModalVisible ? props.updateModalVisible : props.createModalVisible}
             footer={submitter}
             onCancel={() => {
               props.onCancel();
@@ -47,50 +49,54 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           </Modal>
         );
       }}
-      onFinish={props.onSubmit}
+      onFinish={props.updateModalVisible ? props.onSubmitUpdate : props.onSubmitCreate}
     >
       <StepsForm.StepForm
         initialValues={{
-          uuid: props.values.uuid,
-          first_name: props.values.first_name,
-          last_name: props.values.last_name,
-          emails: props.values.emails,
-          phones: props.values.phones,
-          gender: props.values.gender,
-          address: props.values.address,
-          city: props.values.city,
-          postal_code: props.values.postal_code,
-          country: props.values.country,
-          birthday: props.values.birthday,
-          job_function: props.values.job_function,
-          job_level: props.values.job_level,
-          job_title: props.values.job_title,
+          uuid: props.valuesUpdate.uuid,
+          first_name: props.valuesUpdate.first_name,
+          last_name: props.valuesUpdate.last_name,
+          emails: props.valuesUpdate.emails,
+          phones: props.valuesUpdate.phones,
+          gender: props.valuesUpdate.gender,
+          address: props.valuesUpdate.address,
+          city: props.valuesUpdate.city,
+          postal_code: props.valuesUpdate.postal_code,
+          country: props.valuesUpdate.country,
+          birthday: props.valuesUpdate.birthday,
+          job_function: props.valuesUpdate.job_function,
+          job_level: props.valuesUpdate.job_level,
+          job_title: props.valuesUpdate.job_title,
         }}
         title={intl.formatMessage({
           id: 'pages.searchTable.updateForm.basicConfig',
           defaultMessage: 'Informações pessoais',
         })}
       >
-        <ProFormText
-          disabled={true}
-          name="uuid"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
-            defaultMessage: 'Usuário',
-          })}
-          width="lg"
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.updateForm.ruleName.nameRules"
-                  defaultMessage="O campo não deve ficar vazio"
-                />
-              ),
-            },
-          ]}
-        />
+        {props.updateModalVisible && !props.createModalVisible ? (
+          <div style={{ opacity: 0, height: '0px' }}>
+            <ProFormText
+              disabled={true}
+              name="uuid"
+              label={intl.formatMessage({
+                id: 'pages.searchTable.updateForm.ruleName.nameLabel',
+                defaultMessage: 'Usuário',
+              })}
+              width="lg"
+              rules={[
+                {
+                  message: (
+                    <FormattedMessage
+                      id="pages.searchTable.updateForm.ruleName.nameRules"
+                      defaultMessage="O campo não deve ficar vazio"
+                    />
+                  ),
+                },
+              ]}
+            />
+          </div>
+        ) : null}
+
         <ProFormText
           name="first_name"
           label={intl.formatMessage({
@@ -100,7 +106,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -119,7 +124,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -138,7 +142,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -157,7 +160,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -176,7 +178,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -195,7 +196,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -214,7 +214,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -233,7 +232,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -252,7 +250,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -271,7 +268,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -290,7 +286,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -309,7 +304,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -322,19 +316,19 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       </StepsForm.StepForm>
       <StepsForm.StepForm
         initialValues={{
-          job_function: props.values.job_function,
-          job_level: props.values.job_level,
-          job_title: props.values.job_title,
-          business_name: props.values.business_name,
-          business_categories: props.values.business_categories,
-          business_address: props.values.business_address,
-          business_city: props.values.business_city,
-          business_postal_code: props.values.business_postal_code,
-          business_country: props.values.business_country,
-          num_employees: props.values.num_employees,
-          revenue_currency: props.values.revenue_currency,
-          revenue_min: props.values.revenue_min,
-          revenue_max: props.values.revenue_max,
+          job_function: props.valuesUpdate.job_function,
+          job_level: props.valuesUpdate.job_level,
+          job_title: props.valuesUpdate.job_title,
+          business_name: props.valuesUpdate.business_name,
+          business_categories: props.valuesUpdate.business_categories,
+          business_address: props.valuesUpdate.business_address,
+          business_city: props.valuesUpdate.business_city,
+          business_postal_code: props.valuesUpdate.business_postal_code,
+          business_country: props.valuesUpdate.business_country,
+          num_employees: props.valuesUpdate.num_employees,
+          revenue_currency: props.valuesUpdate.revenue_currency,
+          revenue_min: props.valuesUpdate.revenue_min,
+          revenue_max: props.valuesUpdate.revenue_max,
         }}
         title={intl.formatMessage({
           id: 'pages.searchTable.updateForm.ruleProps.title',
@@ -350,7 +344,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -369,7 +362,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -388,7 +380,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -407,7 +398,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -426,7 +416,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -445,7 +434,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -464,7 +452,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -483,7 +470,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -502,7 +488,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -521,7 +506,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -534,9 +518,9 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       </StepsForm.StepForm>
       <StepsForm.StepForm
         initialValues={{
-          linkedinURL: props.values.linkedinURL,
-          facebookURL: props.values.facebookURL,
-          websites: props.values.websites,
+          linkedinURL: props.valuesUpdate.linkedinURL,
+          facebookURL: props.valuesUpdate.facebookURL,
+          websites: props.valuesUpdate.websites,
         }}
         title={intl.formatMessage({
           id: 'pages.searchTable.updateForm.schedulingPeriod.title',
@@ -552,7 +536,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -571,7 +554,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -590,7 +572,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"
@@ -609,7 +590,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="lg"
           rules={[
             {
-              required: true,
+               
               message: (
                 <FormattedMessage
                   id="pages.searchTable.updateForm.ruleName.nameRules"

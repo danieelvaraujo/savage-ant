@@ -26,8 +26,11 @@ export type TableListItem = {
   revenue_min: string;
   revenue_max: string;
   websites: string;
-  json?: string;
-  key?: string;
+  custom_fields?: {
+    json;
+    key;
+    no_structure;
+  };
   updated_at: Date;
   created_at: Date;
 };

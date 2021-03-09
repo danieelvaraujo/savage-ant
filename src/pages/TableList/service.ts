@@ -1,20 +1,24 @@
 import request from '@/utils/request';
 import type { TableListParams, TableListItem } from './data.d';
 
-export async function queryRule(params?: TableListParams) {
+export async function queryContato(params?: TableListParams) {
   return request('/big-data', {
     params,
   });
 }
 
-export async function removeRule(params: { uuid: string[] }) {
-  let idDelete = params.uuid[0];
+export async function queryContatoParam(params: string) {
+  return request(`/big-data?search_term=${params}`);
+}
+
+export async function removeContato(params: { uuid: string }) {
+  let idDelete = params.uuid;
   return request(`/big-data/${idDelete}`, {
     method: 'DELETE',
   });
 }
 
-export async function addRule(params: TableListItem) {
+export async function addContato(params: TableListItem) {
   console.log(params);
   return request('/big-data', {
     method: 'POST',
@@ -24,7 +28,7 @@ export async function addRule(params: TableListItem) {
   });
 }
 
-export async function updateRule(params: TableListParams) {
+export async function updateContato(params: TableListParams) {
   let idUpdate = params.uuid;
   return request(`/big-data/${idUpdate}`, {
     method: 'PUT',
