@@ -26,13 +26,9 @@ export type TableListItem = {
   revenue_min: string;
   revenue_max: string;
   websites: string;
-  custom_fields?: {
-    json;
-    key;
-    no_structure;
-  };
-  updated_at: Date;
-  created_at: Date;
+  custom_fields?: object;
+  updated_at?: Date;
+  created_at?: Date;
 };
 
 export type TableListPagination = {

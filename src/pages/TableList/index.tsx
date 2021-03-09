@@ -10,8 +10,8 @@ import ProTable from '@ant-design/pro-table';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 
-import type { FormValueType } from './components/UpdateForm';
-import UpdateForm from './components/UpdateForm';
+import type { FormValueType } from './components/ModalForm';
+import ModalForm from './components/ModalForm';
 import type { TableListItem } from './data.d';
 import {
   queryContato,
@@ -362,7 +362,7 @@ const TableList: React.FC = () => {
       )}
 
       {/* CRIAR NOVO CONTATO */}
-      <UpdateForm
+      <ModalForm
         onSubmitCreate={async (values) => {
           checkCustom(values);
         }}
@@ -373,7 +373,7 @@ const TableList: React.FC = () => {
       />
 
       {/* ATUALIZAR CAMPOS */}
-      <UpdateForm
+      <ModalForm
         onSubmitUpdate={async (values) => {
           const success = await handleUpdate(values);
           if (success) {
