@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Button, Input, Form, Space } from 'antd';
+import React from 'react';
+import { Modal, Button, Input, Form, Space, message } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { ProFormText, StepsForm } from '@ant-design/pro-form';
 import { useIntl, FormattedMessage } from 'umi';
 
 import type { TableListItem } from '../data.d';
+import { addContato } from '../service';
 
 export type FormValueType = {
   target?: string;
@@ -12,13 +13,11 @@ export type FormValueType = {
   type?: string;
   time?: string;
   frequency?: string;
-  camposCustom?: object;
 } & Partial<TableListItem>;
 
 export type FormProps = {
   onCancel: (flag?: boolean, formVals?: FormValueType) => void;
   onSubmitUpdate: (values: FormValueType) => Promise<void>;
-  onSubmitCreate: (values: FormValueType) => Promise<void>;
   updateModalVisible?: boolean;
   createModalVisible?: boolean;
   valuesUpdate: Partial<TableListItem>;
@@ -62,11 +61,22 @@ const ListaSocial: Partial<TableListItem> = {
 const ModalForm: React.FC<FormProps> = (props) => {
   const intl = useIntl();
 
-  const [camposCustom, setCamposCustom] = useState({});
-
-  useEffect(() => {
-    console.log(camposCustom);
-  }, [camposCustom]);
+  const handleAdd = async (fields: TableListItem) => {
+    const hide = message.loading('Adicionando');
+    try {
+      const resposta = await addContato({ ...fields });
+      // console.log(resposta);
+      // return;
+      hide();
+      message.success('Adicionado com sucesso');
+      return true;
+    } catch (error) {
+      console.log(error);
+      hide();
+      message.error('Falha ao adicionar, tente novamente!');
+      return false;
+    }
+  };
 
   return (
     <StepsForm
@@ -94,13 +104,7 @@ const ModalForm: React.FC<FormProps> = (props) => {
         );
       }}
       // @TODO
-      onFinish={
-        props.updateModalVisible
-          ? props.onSubmitUpdate
-          : camposCustom
-          ? (values) => props.onSubmitCreate({ ...values, camposCustom })
-          : (values) => props.onSubmitCreate(values)
-      }
+      onFinish={(values: any) => handleAdd({ ...values })}
     >
       <StepsForm.StepForm
         initialValues={
@@ -243,61 +247,49 @@ const ModalForm: React.FC<FormProps> = (props) => {
             );
           })}
 
-          <Form name="dynamic_form_nest_item" autoComplete="off">
-            <Form.List name="custom_fields">
-              {(fields, { add, remove }) => (
-                <>
-                  {fields.map((field) => (
-                    <Space
-                      key={field.key}
-                      style={{ display: 'flex', marginBottom: 8 }}
-                      align="baseline"
+          <Form.List name="custom_fields">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map((field) => (
+                  <Space
+                    key={field.key}
+                    style={{ display: 'flex', marginBottom: 8 }}
+                    align="baseline"
+                  >
+                    <Form.Item
+                      {...field}
+                      name={[field.name, 'nome_campo']}
+                      fieldKey={[field.fieldKey, 'nome_custom']}
+                      rules={[{ required: true, message: 'Missing first name' }]}
                     >
-                      <Form.Item
-                        {...field}
-                        name={[field.name, 'nome_campo']}
-                        fieldKey={[field.fieldKey, 'nome_custom']}
-                        rules={[{ required: true, message: 'Missing first name' }]}
-                      >
-                        <Input
-                          placeholder="Campo personalizado"
-                          onChange={(e) =>
-                            setCamposCustom({ ...camposCustom, nome_campo: e.target.value })
-                          }
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        {...field}
-                        name={[field.name, 'valor_campo']}
-                        fieldKey={[field.fieldKey, 'valor_custom']}
-                        rules={[{ required: true, message: 'Missing last name' }]}
-                      >
-                        <Input
-                          placeholder="Valor do campo"
-                          onChange={(e) =>
-                            setCamposCustom({ ...camposCustom, valor_campo: e.target.value })
-                          }
-                        />
-                      </Form.Item>
-                      <MinusCircleOutlined onClick={() => remove(field.name)} />
-                    </Space>
-                  ))}
-                  <Form.Item>
-                    <Button
-                      type="dashed"
-                      onClick={() => {
-                        add();
-                      }}
-                      block
-                      icon={<PlusOutlined />}
+                      <Input placeholder="Campo personalizado" />
+                    </Form.Item>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, 'valor_campo']}
+                      fieldKey={[field.fieldKey, 'valor_custom']}
+                      rules={[{ required: true, message: 'Missing last name' }]}
                     >
-                      Add field
-                    </Button>
-                  </Form.Item>
-                </>
-              )}
-            </Form.List>
-          </Form>
+                      <Input placeholder="Valor do campo" />
+                    </Form.Item>
+                    <MinusCircleOutlined onClick={() => remove(field.name)} />
+                  </Space>
+                ))}
+                <Form.Item>
+                  <Button
+                    type="dashed"
+                    onClick={() => {
+                      add();
+                    }}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Add field
+                  </Button>
+                </Form.Item>
+              </>
+            )}
+          </Form.List>
         </>
       </StepsForm.StepForm>
     </StepsForm>

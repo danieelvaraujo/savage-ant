@@ -4,35 +4,43 @@
     component: '../layouts/BlankLayout',
     routes: [
       {
-        path: '/user',
+        path: '/auth',
         component: '../layouts/UserLayout',
         routes: [
           {
             name: 'login',
-            path: '/user/login',
+            path: '/auth/login',
             component: './User/login',
           },
         ],
       },
-
       {
         path: '/',
-        component: '../layouts/BasicLayout',
-        authority: ['admin', 'user'],
+        component: '../layouts/SecurityLayout',
         routes: [
           {
-            name: 'list.table-list',
-            icon: 'table',
             path: '/',
-            component: './TableList',
+            component: '../layouts/BasicLayout',
+            routes: [
+              {
+                path: '/',
+                redirect: '/list',
+              },
+              {
+                name: 'list.table-list',
+                icon: 'table',
+                path: '/list',
+                component: './TableList',
+              },
+              {
+                component: './404',
+              },
+            ],
           },
           {
             component: './404',
           },
         ],
-      },
-      {
-        component: './404',
       },
     ],
   },

@@ -22,7 +22,6 @@ export async function removeContato(params: { uuid: string }) {
 }
 
 export async function addContato(params: TableListItem) {
-  console.log(params);
   return request('/big-data', {
     method: 'POST',
     data: {

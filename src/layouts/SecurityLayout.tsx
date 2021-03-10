@@ -2,6 +2,7 @@ import React from 'react';
 import { PageLoading } from '@ant-design/pro-layout';
 import type { ConnectProps } from 'umi';
 import { Redirect, connect } from 'umi';
+import { stringify } from 'querystring';
 import type { ConnectState } from '@/models/connect';
 import type { CurrentUser } from '@/models/user';
 
@@ -12,20 +13,14 @@ type SecurityLayoutProps = {
 
 type SecurityLayoutState = {
   isReady: boolean;
-  isLogin: boolean;
 };
 
 class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayoutState> {
   state: SecurityLayoutState = {
     isReady: false,
-    isLogin: false,
   };
 
   componentDidMount() {
-    const { currentUser } = this.props;
-    if (currentUser.name) {
-      this.setState({ isLogin: true });
-    }
     this.setState({
       isReady: true,
     });
@@ -40,18 +35,16 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
   render() {
     const { isReady } = this.state;
     const { children, loading } = this.props;
+    const isLogin = localStorage.getItem('antd-pro-authority');
 
-    if (loading || !isReady) {
+    if ((!isLogin && loading) || !isReady) {
       return <PageLoading />;
     }
 
-    if (this.state.isLogin) {
-      return <Redirect to={'/welcome'} />;
+    if (!isLogin && isReady) {
+      return <Redirect to="/auth/login" />;
     }
 
-    if (!this.state.isLogin && window.location.pathname !== '/user/login') {
-      return <Redirect to={`/user/login`} />;
-    }
     return children;
   }
 }

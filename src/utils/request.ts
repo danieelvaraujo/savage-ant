@@ -20,7 +20,7 @@ const codeMessage: { [status: number]: string } = {
   504: 'O gateway atingiu o tempo limite.',
 };
 
-/** 异常处理程序 */
+/** Manipulador de exceção */
 const errorHandler = (error: { response: Response }): Response => {
   const { response } = error;
   if (response && response.status) {
@@ -28,22 +28,22 @@ const errorHandler = (error: { response: Response }): Response => {
     const { status, url } = response;
 
     notification.error({
-      message: `请求错误 ${status}: ${url}`,
+      message: `Erro de solicitação  ${status}: ${url}`,
       description: errorText,
     });
   } else if (!response) {
     notification.error({
-      description: '您的网络发生异常，无法连接服务器',
-      message: '网络异常',
+      description: 'Sua rede não conseguiu se conectar ao servidor',
+      message: 'Erro de conexão',
     });
   }
   return response;
 };
 
-/** 配置request请求时的默认参数 */
+/** Configure os parâmetros padrão da solicitação  */
 const request = extend({
-  errorHandler, // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
+  errorHandler, // Tratamento de erros padrão
+  credentials: 'include', // A solicitação padrão traz cookies
   prefix: 'https://tsah.agencysavage.com',
   headers: {
     Accept: 'application/json',

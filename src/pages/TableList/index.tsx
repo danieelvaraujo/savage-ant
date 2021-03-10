@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'umi';
 import { Button, message, Drawer, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
@@ -13,26 +13,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type { FormValueType } from './components/ModalForm';
 import ModalForm from './components/ModalForm';
 import type { TableListItem } from './data.d';
-import { queryContato, updateContato, addContato, removeContato, uploadData } from './service';
-
-/**
- * Adicionar
- *
- * @param fields
- */
-const handleAdd = async (fields: TableListItem) => {
-  const hide = message.loading('Adicionando');
-  try {
-    await addContato({ ...fields });
-    hide();
-    message.success('Adicionado com sucesso');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Falha ao adicionar, tente novamente!');
-    return false;
-  }
-};
+import { queryContato, updateContato, removeContato, uploadData } from './service';
 
 /**
  * Atualizar
@@ -134,8 +115,6 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
-  const [createValues, setCreateValues] = useState<TableListItem>();
-  const [ready, setReady] = useState(false);
   const actionRef = useRef<ActionType>();
 
   /** Configuração internacional */
@@ -155,42 +134,6 @@ const TableList: React.FC = () => {
       }
     },
   };
-
-  const checkCustom = (values: any) => {
-    console.log(values);
-    return;
-    if (values.camposCustom) {
-      setCreateValues({
-        ...values,
-        custom_fields: {
-          json: values.json,
-          key: values.key,
-        },
-      });
-      setReady(true);
-    } else {
-      setCreateValues({ ...values });
-      setReady(true);
-    }
-  };
-
-  const enviarForm = async () => {
-    const success = await handleAdd(createValues as TableListItem);
-    if (success && ready) {
-      handleCreateModalVisible(false);
-      if (actionRef.current) {
-        actionRef.current.reload();
-      }
-    } else {
-      return;
-    }
-  };
-
-  useEffect(() => {
-    if (ready) {
-      enviarForm();
-    }
-  }, [ready]);
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -330,10 +273,6 @@ const TableList: React.FC = () => {
 
       {/* ATUALIZAR CAMPOS */}
       <ModalForm
-        onSubmitCreate={async (values) => {
-          console.log(values);
-          // checkCustom(values);
-        }}
         onSubmitUpdate={async (values) => {
           const success = await handleUpdate(values);
           if (success) {

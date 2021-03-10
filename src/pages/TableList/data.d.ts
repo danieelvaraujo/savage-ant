@@ -27,6 +27,8 @@ export type TableListItem = {
   revenue_max: string;
   websites: string;
   custom_fields?: object;
+  nome_campo: string;
+  valor_campo: string;
   updated_at?: Date;
   created_at?: Date;
 };
