@@ -15,100 +15,6 @@ import ModalForm from './components/ModalForm';
 import type { TableListItem } from './data.d';
 import { queryContato, updateContato, removeContato, uploadData } from './service';
 
-/**
- * Atualizar
- *
- * @param fields
- */
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('Configurando');
-  try {
-    await updateContato({
-      uuid: fields.uuid,
-      first_name: fields.first_name,
-      last_name: fields.last_name,
-      emails: fields.emails,
-      phones: fields.phones,
-      gender: fields.gender,
-      address: fields.address,
-      city: fields.city,
-      postal_code: fields.postal_code,
-      country: fields.country,
-      linkedinURL: fields.linkedinURL,
-      facebookURL: fields.facebookURL,
-      birthday: fields.birthday,
-      job_function: fields.job_function,
-      job_level: fields.job_level,
-      job_title: fields.job_title,
-      business_name: fields.business_name,
-      business_categories: fields.business_categories,
-      business_address: fields.business_address,
-      business_city: fields.business_city,
-      business_postal_code: fields.business_postal_code,
-      business_country: fields.business_country,
-      num_employees: fields.num_employees,
-      revenue_currency: fields.revenue_currency,
-      revenue_min: fields.revenue_min,
-      revenue_max: fields.revenue_max,
-      websites: fields.websites,
-    });
-    hide();
-
-    message.success('A configuração foi bem sucedida');
-    return true;
-  } catch (error) {
-    hide();
-    console.log(error);
-    message.error('A configuração falhou, tente novamente!');
-    return false;
-  }
-};
-
-/**
- * Remover
- *
- * @param selectedRows
- */
-
-const handleRemove = async (contato: TableListItem) => {
-  const hide = message.loading('deletando');
-  if (!contato.uuid) {
-    return false;
-  } else {
-    try {
-      await removeContato({
-        uuid: contato.uuid,
-      });
-      hide();
-      message.success('Excluído com sucesso, a lista será atualizada');
-      return true;
-    } catch (error) {
-      hide();
-      message.error('A exclusão falhou, por favor tente novamente');
-      return false;
-    }
-  }
-};
-
-/**
- * Upload
- */
-
-const handleUpload = async (file: File) => {
-  if (!file) {
-    return false;
-  } else {
-    try {
-      await uploadData(file);
-      message.success('Contatos carregados com sucesso');
-      return true;
-    } catch (error) {
-      message.error('A exclusão falhou, por favor tente novamente');
-      return false;
-    }
-  }
-};
-
 const TableList: React.FC = () => {
   const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -116,9 +22,112 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
   const actionRef = useRef<ActionType>();
-
   /** Configuração internacional */
   const intl = useIntl();
+
+  /**
+   * Atualizar
+   *
+   * @param fields
+   */
+  const handleUpdate = async (fields: FormValueType) => {
+    const hide = message.loading('Configurando');
+    try {
+      await updateContato({
+        uuid: fields.uuid,
+        first_name: fields.first_name,
+        last_name: fields.last_name,
+        emails: fields.emails,
+        phones: fields.phones,
+        gender: fields.gender,
+        address: fields.address,
+        city: fields.city,
+        postal_code: fields.postal_code,
+        country: fields.country,
+        linkedinURL: fields.linkedinURL,
+        facebookURL: fields.facebookURL,
+        birthday: fields.birthday,
+        job_function: fields.job_function,
+        job_level: fields.job_level,
+        job_title: fields.job_title,
+        business_name: fields.business_name,
+        business_categories: fields.business_categories,
+        business_address: fields.business_address,
+        business_city: fields.business_city,
+        business_postal_code: fields.business_postal_code,
+        business_country: fields.business_country,
+        num_employees: fields.num_employees,
+        revenue_currency: fields.revenue_currency,
+        revenue_min: fields.revenue_min,
+        revenue_max: fields.revenue_max,
+        websites: fields.websites,
+      });
+      hide();
+
+      message.success('A configuração foi bem sucedida');
+      return true;
+    } catch (error) {
+      hide();
+      console.log(error);
+      message.error('A configuração falhou, tente novamente!');
+      return false;
+    }
+  };
+
+  /**
+   * Remover
+   *
+   * @param selectedRows
+   */
+
+  const handleRemove = async (contato: TableListItem) => {
+    const hide = message.loading('deletando');
+    if (!contato.uuid) {
+      return false;
+    } else {
+      try {
+        const confirmacao = confirm('Você realmente deseja remover este contato?');
+        if (confirmacao === true) {
+          await removeContato({
+            uuid: contato.uuid,
+          });
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+          hide();
+          message.success('Excluído com sucesso, a lista será atualizada');
+          return true;
+        } else {
+          hide();
+          message.success('Remoção cancelada pelo usuário');
+          return false;
+        }
+      } catch (error) {
+        hide();
+        message.error('A exclusão falhou, por favor tente novamente');
+        return false;
+      }
+    }
+  };
+
+  /**
+   * Upload
+   */
+
+  const handleUpload = async (file: File) => {
+    if (!file) {
+      return false;
+    } else {
+      try {
+        await uploadData(file);
+        message.success('Contatos carregados com sucesso');
+        return true;
+      } catch (error) {
+        message.error('A exclusão falhou, por favor tente novamente');
+        return false;
+      }
+    }
+  };
 
   const uploadProps = {
     name: 'file',
@@ -282,6 +291,12 @@ const TableList: React.FC = () => {
               actionRef.current.reload();
             }
           }
+        }}
+        onSubmitCreate={() => {
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+          handleCreateModalVisible(false);
         }}
         onCancel={() => {
           handleCreateModalVisible(false);

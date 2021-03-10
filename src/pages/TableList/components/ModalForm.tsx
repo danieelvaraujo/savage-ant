@@ -18,6 +18,7 @@ export type FormValueType = {
 export type FormProps = {
   onCancel: (flag?: boolean, formVals?: FormValueType) => void;
   onSubmitUpdate: (values: FormValueType) => Promise<void>;
+  onSubmitCreate: (values: boolean) => void;
   updateModalVisible?: boolean;
   createModalVisible?: boolean;
   valuesUpdate: Partial<TableListItem>;
@@ -62,13 +63,13 @@ const ModalForm: React.FC<FormProps> = (props) => {
   const intl = useIntl();
 
   const handleAdd = async (fields: TableListItem) => {
+    console.log(fields);
     const hide = message.loading('Adicionando');
     try {
-      const resposta = await addContato({ ...fields });
-      // console.log(resposta);
-      // return;
+      await addContato({ ...fields });
       hide();
       message.success('Adicionado com sucesso');
+      props.onSubmitCreate(false);
       return true;
     } catch (error) {
       console.log(error);
